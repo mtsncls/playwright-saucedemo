@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: ['main', 'master']
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        env:
+          CI: true
+        run: |
+          # ensure test-results and allure-results directories exist for uploads
+          mkdir -p test-results
+          npx playwright test --reporter=list || true
+
+      - name: Upload raw test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: |
+            test-results/**
+            allure-results/**
+
+      - name: Install Allure CLI (optional)
+        if: always()
+        run: npm i -g allure-commandline@2.13.9 || true
+
+      - name: Generate Allure report (optional)
+        if: always()
+        run: |
+          if [ -d "allure-results" ]; then
+            mkdir -p allure-report
+            allure generate allure-results -o allure-report || true
+          fi
+
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/**

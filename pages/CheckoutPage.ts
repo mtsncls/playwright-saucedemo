@@ -1,5 +1,11 @@
 import { Locator, Page } from '@playwright/test';
 
+export interface CheckoutData {
+  firstName?: string;
+  lastName?: string;
+  postalCode?: string;
+}
+
 export class CheckoutPage {
   readonly firstName: Locator;
   readonly lastName: Locator;
@@ -16,16 +22,16 @@ export class CheckoutPage {
     this.finishButton = this.page.locator('#finish');
     this.successMessage = this.page.locator('.complete-header');
   }
-
   
-  async fillInfo() {
-    await this.firstName.fill('John');
-    await this.lastName.fill('Doe');
-    await this.postalCode.fill('12345');
+  async fillCheckoutForm(data: CheckoutData = {}) {
+    const { firstName = 'John', lastName = 'Doe', postalCode = '12345' } = data;
+    await this.firstName.fill(firstName);
+    await this.lastName.fill(lastName);
+    await this.postalCode.fill(postalCode);
     await this.continueButton.click();
   }
 
-  async finishOrder() {
+  async completeOrder() {
     await this.finishButton.click();
   }
 }

@@ -5,7 +5,7 @@ test('valid login', async ({ page }) => {
   const login = new LoginPage(page);
 
   await login.goto();
-  await login.login(process.env.STANDARD_USER, process.env.COMMON_PASSWORD);
+  await login.login(process.env.STANDARD_USER || 'standard_user', process.env.COMMON_PASSWORD || 'secret_sauce');
   await login.screenshot("valid-login.png");
   await expect(page).toHaveURL(/inventory/);
 });

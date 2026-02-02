@@ -19,10 +19,10 @@ export class LoginPage {
   }
 
   async login(user: string, pass: string) {
+    await this.page.waitForSelector('#user-name');
     await this.username.fill(user);
     await this.password.fill(pass);
     await this.loginButton.click();
-
   }
 
   async screenshot(path: string) {

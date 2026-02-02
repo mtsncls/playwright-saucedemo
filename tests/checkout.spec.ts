@@ -17,8 +17,8 @@ test('complete checkout flow', async ({ page }) => {
   await products.goToCart();
 
   await cart.checkout();
-  await checkout.fillInfo();
-  await checkout.finishOrder();
+  await checkout.fillCheckoutForm({ firstName: 'Alice', lastName: 'Smith', postalCode: '90210' });
+  await checkout.completeOrder();
 
   await expect(checkout.successMessage).toHaveText('Thank you for your orders!');
 });

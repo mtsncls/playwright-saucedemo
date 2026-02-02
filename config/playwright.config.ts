@@ -13,8 +13,10 @@ export default defineConfig({
     headless: true,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    trace: 'retain-on-failure'
+    trace: 'retain-on-failure',
+    storageState: 'storageState.json'
   },
+  globalSetup: './config/global-setup.ts',
   projects: [
     { name: 'chromium', use: { browserName: 'chromium' } },
     { name: 'firefox', use: { browserName: 'firefox' } }

@@ -8,6 +8,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,22 +31,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      - name: Install Playwright browsers for matrix
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
-      - name: Run Playwright tests
+      - name: Run Playwright tests (browser = ${{ matrix.browser }})
         env:
           CI: true
         run: |
-          # ensure test-results and allure-results directories exist for uploads
           mkdir -p test-results
-          npx playwright test --reporter=list || true
+          npx playwright test --project=${{ matrix.browser }} --reporter=list || true
 
       - name: Upload raw test artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-artifacts
+          name: playwright-artifacts-${{ matrix.browser }}
           path: |
             test-results/**
             allure-results/**
@@ -56,13 +58,13 @@ jobs:
         if: always()
         run: |
           if [ -d "allure-results" ]; then
-            mkdir -p allure-report
-            allure generate allure-results -o allure-report || true
+            mkdir -p allure-report-${{ matrix.browser }}
+            allure generate allure-results -o allure-report-${{ matrix.browser }} || true
           fi
 
       - name: Upload Allure report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
-          path: allure-report/**
+          name: allure-report-${{ matrix.browser }}
+          path: allure-report-${{ matrix.browser }}/**

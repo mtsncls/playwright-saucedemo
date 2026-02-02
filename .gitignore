@@ -28,3 +28,23 @@ test-results/
 reports/
 screenshots/
 playwright-report/
+
+# Node / deps
+node_modules/
+
+# Playwright artifacts & reports
+test-results/
+reports/
+playwright-report/
+screenshots/
+allure-results/
+allure-report/
+
+# Env / IDE / OS
+.env
+.env.local
+.vscode/
+.idea/
+.DS_Store
+npm-debug.log
+yarn-error.log

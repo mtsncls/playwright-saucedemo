@@ -16,3 +16,9 @@ allure-report/
 .env
 .env.local
 .env.*
+
+.vscode/
+.idea/
+.DS_Store
+npm-debug.log
+yarn-error.log

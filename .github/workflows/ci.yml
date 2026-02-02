@@ -1,19 +1,19 @@
-name: CI
+name: CI (cost-optimized)
 
 on:
   push:
     branches: ['main', 'master']
   pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * *' # nightly at 03:00 UTC (full matrix)
 
 jobs:
-  test:
+  quick-tests:
+    name: Quick tests (chromium)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        browser: [chromium, firefox, webkit]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -25,46 +25,61 @@ jobs:
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers for matrix
-        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Install Playwright chromium only
+        run: npx playwright install chromium
 
-      - name: Run Playwright tests (browser = ${{ matrix.browser }})
-        env:
-          CI: true
-        run: |
-          mkdir -p test-results
-          npx playwright test --project=${{ matrix.browser }} --reporter=list || true
+      - name: Run tests (chromium)
+        env: { CI: true }
+        run: npx playwright test --project=chromium --reporter=list
 
-      - name: Upload raw test artifacts
-        if: always()
+      - name: Upload artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: |
+            test-results/**
+            allure-results/**
+
+  full-matrix:
+    name: Full browser matrix (manual/nightly)
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with: { node-version: 18 }
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser ${{ matrix.browser }}
+        run: npx playwright install ${{ matrix.browser }}
+
+      - name: Run tests (browser = ${{ matrix.browser }})
+        env: { CI: true }
+        run: npx playwright test --project=${{ matrix.browser }} --reporter=list
+
+      - name: Upload artifacts on failure
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-artifacts-${{ matrix.browser }}
           path: |
             test-results/**
             allure-results/**
-
-      - name: Install Allure CLI (optional)
-        if: always()
-        run: npm i -g allure-commandline@2.13.9 || true
-
-      - name: Generate Allure report (optional)
-        if: always()
-        run: |
-          if [ -d "allure-results" ]; then
-            mkdir -p allure-report-${{ matrix.browser }}
-            allure generate allure-results -o allure-report-${{ matrix.browser }} || true
-          fi
-
-      - name: Upload Allure report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report-${{ matrix.browser }}
-          path: allure-report-${{ matrix.browser }}/**

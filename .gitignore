@@ -4,3 +4,15 @@ allure-results/
 allure-report/
 
 node_modules/
+
+# Build & reports
+dist/
+build/
+out/
+coverage/
+allure-results/
+allure-report/
+
+.env
+.env.local
+.env.*

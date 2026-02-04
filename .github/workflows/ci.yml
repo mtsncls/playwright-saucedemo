@@ -38,7 +38,7 @@ jobs:
           CI: true
         run: |
           mkdir -p test-results
-          npx playwright test --project=chromium --reporter=list || true
+          npx playwright test --project=chromium || true
 
       - name: Upload raw test artifacts
         if: always()
@@ -103,7 +103,7 @@ jobs:
           CI: true
         run: |
           mkdir -p test-results
-          npx playwright test --project=${{ matrix.browser }} --reporter=list || true
+          npx playwright test --project=${{ matrix.browser }} || true
 
       - name: Upload raw test artifacts
         if: always()

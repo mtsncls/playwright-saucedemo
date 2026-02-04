@@ -51,7 +51,7 @@ jobs:
 
       - name: Install Allure CLI
         if: always()
-        run: npm i -g allure-commandline@2.23.2 || true
+        run: npm i -g allure-commandline@2.25.0 || true
 
       - name: Generate Allure report (chromium)
         if: always()
@@ -114,7 +114,7 @@ jobs:
 
       - name: Install Allure CLI
         if: always()
-        run: npm i -g allure-commandline@2.23.2 || true
+        run: npm i -g allure-commandline@2.25.0 || true
 
       - name: Generate Allure report (browser = ${{ matrix.browser }})
         if: always()

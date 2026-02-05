@@ -1,10 +1,14 @@
 import { chromium, FullConfig } from '@playwright/test';
 
 export default async function globalSetup(config: FullConfig) {
-  const baseURL = config.use.baseURL || process.env.BASE_URL || 'https://www.saucedemo.com';
-  const username = process.env.STANDARD_USER || 'standard_user';
-  const password = process.env.COMMON_PASSWORD || 'secret_sauce';
+  const baseURL = process.env.BASE_URL || 'https://www.saucedemo.com';
+  const username = process.env.STANDARD_USER;
+  const password = process.env.COMMON_PASSWORD;
   const storagePath = 'storageState.json';
+
+  if (!username || !password) {
+    throw new Error('STANDARD_USER and COMMON_PASSWORD environment variables are required');
+  }
 
   const browser = await chromium.launch();
   const page = await browser.newPage();

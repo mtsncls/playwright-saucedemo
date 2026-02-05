@@ -4,8 +4,15 @@ import { LoginPage } from '../pages/LoginPage';
 test('valid login', async ({ page }) => {
   const login = new LoginPage(page);
 
+  const username = process.env.STANDARD_USER;
+  const password = process.env.COMMON_PASSWORD;
+  
+  if (!username || !password) {
+    throw new Error('STANDARD_USER and COMMON_PASSWORD environment variables are required');
+  }
+
   await login.goto();
-  await login.login(process.env.STANDARD_USER || 'standard_user', process.env.COMMON_PASSWORD || 'secret_sauce');
+  await login.login(username, password);
   await login.screenshot("valid-login.png");
   await expect(page).toHaveURL(/inventory/);
 });

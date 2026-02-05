@@ -41,6 +41,8 @@ jobs:
       - name: Run Playwright tests (chromium)
         env:
           CI: true
+          STANDARD_USER: ${{ secrets.STANDARD_USER }}
+          COMMON_PASSWORD: ${{ secrets.COMMON_PASSWORD }}
         run: |
           mkdir -p test-results
           npx playwright test --project=chromium || true
@@ -106,6 +108,8 @@ jobs:
       - name: Run Playwright tests (browser = ${{ matrix.browser }})
         env:
           CI: true
+          STANDARD_USER: ${{ secrets.STANDARD_USER }}
+          COMMON_PASSWORD: ${{ secrets.COMMON_PASSWORD }}
         run: |
           mkdir -p test-results
           npx playwright test --project=${{ matrix.browser }} || true

@@ -10,8 +10,15 @@ test('complete checkout flow', async ({ page }) => {
   const cart = new CartPage(page);
   const checkout = new CheckoutPage(page);
 
+  const username = process.env.STANDARD_USER;
+  const password = process.env.COMMON_PASSWORD;
+  
+  if (!username || !password) {
+    throw new Error('STANDARD_USER and COMMON_PASSWORD environment variables are required');
+  }
+
   await login.goto();
-  await login.login('standard_user', 'secret_sauce');
+  await login.login(username, password);
 
   await products.addFirstItem();
   await products.goToCart();

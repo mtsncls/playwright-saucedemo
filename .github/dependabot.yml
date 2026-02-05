@@ -1,0 +1,33 @@
+version: 2
+updates:
+  # Check npm dependencies
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '03:00'
+    open-pull-requests-limit: 5
+    reviewers:
+      - 'matiasalfonso'
+    labels:
+      - 'dependencies'
+      - 'security'
+    commit-message:
+      prefix: 'chore(deps):'
+      prefix-development: 'chore(deps-dev):'
+      include: 'scope'
+
+  # Check GitHub Actions versions
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '03:00'
+    reviewers:
+      - 'matiasalfonso'
+    labels:
+      - 'ci'
+    commit-message:
+      prefix: 'ci:'

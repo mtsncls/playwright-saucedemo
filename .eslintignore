@@ -1,0 +1,10 @@
+node_modules
+dist
+build
+coverage
+allure-report
+allure-report-*
+test-results
+storageState.json
+.next
+out

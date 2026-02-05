@@ -1,7 +1,7 @@
 import { chromium, FullConfig } from '@playwright/test';
 
-export default async function globalSetup(config: FullConfig) {
-  const baseURL = process.env.BASE_URL || 'https://www.saucedemo.com';
+export default async function globalSetup(_config: FullConfig) {
+  const baseURL = _config.use.baseURL || process.env.BASE_URL || 'https://www.saucedemo.com';
   const username = process.env.STANDARD_USER;
   const password = process.env.COMMON_PASSWORD;
   const storagePath = 'storageState.json';

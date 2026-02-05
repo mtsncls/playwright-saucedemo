@@ -7,6 +7,8 @@
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
     "allure:generate": "allure generate ./allure-results --clean",
     "allure:open": "allure open ./allure-report"
   },
@@ -17,6 +19,8 @@
   "devDependencies": {
     "@playwright/test": "^1.58.0",
     "@types/node": "^25.0.10",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
     "allure-playwright": "^3.4.5",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.0.0",

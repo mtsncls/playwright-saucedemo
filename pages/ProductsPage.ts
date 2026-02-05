@@ -1,5 +1,4 @@
 import { Page, Locator } from '@playwright/test';
-import { title } from 'process';
 
 export class ProductsPage {
   readonly title: Locator;
